@@ -17,3 +17,4 @@ Designed to help users manage their time, projects, and organize all aspects of 
 - Measure activity over different time intervals.
 - Display a motivational quote on the app's main page.
 
+## Jokes ##
