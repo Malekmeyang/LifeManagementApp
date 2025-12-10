@@ -1,37 +1,26 @@
+using Notes.Interfaces;
+using Notes.ViewModels;
+
 namespace Notes.Views;
 
 public partial class AllNotesPage : ContentPage
 {
-    public AllNotesPage()
+    private readonly IJokeService _jokeService;
+
+    public AllNotesPage(IJokeService jokeService, NotesViewModel viewModel)
     {
         InitializeComponent();
+        _jokeService = jokeService;
 
-        BindingContext = new Models.AllNotes();
+
+        BindingContext = viewModel;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
-        ((Models.AllNotes)BindingContext).LoadNotes();
-    }
+        base.OnAppearing();
 
-    private async void Add_Clicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(NotePage));
-    }
-
-    private async void notesCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection.Count != 0)
-        {
-            // Get the note model
-            var note = (Models.Note)e.CurrentSelection[0];
-
-            // Should navigate to "NotePage?ItemId=path\on\device\XYZ.notes.txt"
-            await Shell.Current.GoToAsync($"{nameof(NotePage)}?ItemId={note.Filename}");
-
-
-            // Unselect the UI
-            notesCollection.SelectedItem = null;
-        }
+        string joke = await _jokeService.GetDailyJokeAsync();
+        JokeLabel.Text = joke;
     }
 }
