@@ -1,14 +1,26 @@
+using Notes.Interfaces;
+using Notes.ViewModels;
+
 namespace Notes.Views;
 
 public partial class AllNotesPage : ContentPage
 {
-    public AllNotesPage()
+    private readonly IJokeService _jokeService;
+
+    public AllNotesPage(IJokeService jokeService, NotesViewModel viewModel)
     {
         InitializeComponent();
+        _jokeService = jokeService;
+
+
+        BindingContext = viewModel;
     }
 
-    private void ContentPage_NavigatedTo(object sender, NavigatedToEventArgs e)
+    protected override async void OnAppearing()
     {
-        notesCollection.SelectedItem = null;
+        base.OnAppearing();
+
+        string joke = await _jokeService.GetDailyJokeAsync();
+        JokeLabel.Text = joke;
     }
 }
